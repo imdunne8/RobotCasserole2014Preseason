@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Encoder;
 
 public class MrRoboto extends IterativeRobot {       
     
@@ -63,7 +64,10 @@ public class MrRoboto extends IterativeRobot {
     
     // Transmission
     Solenoid xmissionSolenoid1, xmissionSolenoid2;
-    Compressor xmissionCompressor;  
+    Compressor xmissionCompressor;
+    
+    //Encoder
+    Encoder encoder;
     
     // Booleans
     public boolean isTankDrive; // tank drive or arcade drive? 
@@ -72,10 +76,14 @@ public class MrRoboto extends IterativeRobot {
     
     
     public void robotInit() {     
-        // Construct drivetrain motors
+         // Construct drivetrain motors
         try {
             this.frontLeftCAN = new CANJaguar(CANID_FRONT_LEFT);
+            //Jaguar encoder left -- verify 360 parameter.
+            this.frontLeftCAN.configEncoderCodesPerRev(360);
             this.frontRightCAN = new CANJaguar(CANID_FRONT_RIGHT);
+            //Jaguar encoder right -- verify 360 parameter.
+            this.frontRightCAN.configEncoderCodesPerRev(360);
             this.rearLeftCAN = new CANJaguar(CANID_BACK_LEFT);
             this.rearRightCAN = new CANJaguar(CANID_BACK_RIGHT);
         } catch (CANTimeoutException ex) {
@@ -89,6 +97,9 @@ public class MrRoboto extends IterativeRobot {
         
         // Construct RobotDrive w/ Jag motors
         this.driveTrain = new RobotDrive(frontLeftCAN,frontRightCAN,rearLeftCAN,rearRightCAN);
+        
+        //Construct encoder
+        this.encoder = new Encoder(0,0);
         
         // Construct Joystick
         this.mainJoy = new Joystick(JOY_PORT);
