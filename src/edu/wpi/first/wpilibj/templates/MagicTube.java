@@ -6,12 +6,22 @@
 
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Solenoid;
+
 /**
  *
  * @author mec
  */
 public class MagicTube {
-    public MagicTube(){
-        
+    // Piston Spike Relay (Up/Down)
+    Relay pistonSpikeRelay;
+    
+    // Piston Solenoid
+    Solenoid pistonSolenoid;
+    
+    public MagicTube(int PISTON_SPIKE_ID, int PISTON_SOLENOID_ID) {
+        this.pistonSpikeRelay = new Relay(PISTON_SPIKE_ID);
+        this.pistonSolenoid = new Solenoid(PISTON_SOLENOID_ID);
     }
 }

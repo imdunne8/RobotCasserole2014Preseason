@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Relay;
 
 public class MrRoboto extends IterativeRobot {       
     
@@ -44,8 +43,8 @@ public class MrRoboto extends IterativeRobot {
     final int TANK_DRIVE_BUTTONID = 0;
     
     // MagicTube object channels
-    final int PISTON_SPIKE_ID = 0;
-    final int PISTON_SOLENOID_ID = 0;
+    final int MAGIC_SPIKE_ID = 0;
+    final int MAGIC_SOLENOID_ID = 0;
     
     // CAN Jaguars
     CANJaguar frontLeftCAN;
@@ -59,6 +58,9 @@ public class MrRoboto extends IterativeRobot {
     // Drivetrain
     RobotDrive driveTrain;
     
+    // MagicTube
+    MagicTube magicTube;
+    
     // Transmission
     Solenoid xmissionSolenoid1, xmissionSolenoid2;
     Compressor xmissionCompressor;  
@@ -67,11 +69,7 @@ public class MrRoboto extends IterativeRobot {
     public boolean isTankDrive; // tank drive or arcade drive? 
     public boolean curGear; // first gear (false) or second (true)
     
-    // Piston Spike Relay (Up/Down)
-    Relay pistonSpikeRelay;
     
-    // Piston Solenoid
-    Solenoid pistonSolenoid;
     
     public void robotInit() {     
         // Construct drivetrain motors
@@ -96,8 +94,8 @@ public class MrRoboto extends IterativeRobot {
         this.mainJoy = new Joystick(JOY_PORT);
         this.offJoy = new Joystick(OFFJOY_PORT);
         
-        // Construct MagicTube objects
-        this.pistonSpikeRelay = new Relay(PISTON_SPIKE_ID);
+        // Construct MagicTube for magical tube-ness!
+        this.magicTube = new MagicTube(MAGIC_SPIKE_ID, MAGIC_SOLENOID_ID);
  
         // init bools
         isTankDrive = true; //tank drive is default
