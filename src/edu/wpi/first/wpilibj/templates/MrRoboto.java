@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay;
 
 public class MrRoboto extends IterativeRobot {       
     
@@ -27,19 +28,24 @@ public class MrRoboto extends IterativeRobot {
     final int CANID_BACK_RIGHT = 0;
     
     // Transmission object channels
-    final int SOLENOID1_CHANNEL = 0;
-    final int SOLENOID2_CHANNEL = 0;
-    final int COMPRESSOR_RELAY_CHANNEL = 0;
-    final int PRESSURESW_CHANNEL = 0;
+    final int XMISSION_SOLENOID1_ID = 0;
+    final int XMISSION_SOLENOID2_ID = 0;
+    final int COMPRESSOR_RELAY_ID = 0;
+    final int PRESSURESW_ID = 0;
     
     // Joystick port
     final int JOY_PORT = 0;
+    final int OFFJOY_PORT = 0;
     
     // button ID's for used buttons on joystick 
     final int SHIFT_DOWN_BUTTONID = 0;
     final int SHIFT_UP_BUTTONID = 0;
     final int ARCADE_DRIVE_BUTTONID = 0;
     final int TANK_DRIVE_BUTTONID = 0;
+    
+    // MagicTube object channels
+    final int PISTON_SPIKE_ID = 0;
+    final int PISTON_SOLENOID_ID = 0;
     
     // CAN Jaguars
     CANJaguar frontLeftCAN;
@@ -61,6 +67,11 @@ public class MrRoboto extends IterativeRobot {
     public boolean isTankDrive; // tank drive or arcade drive? 
     public boolean curGear; // first gear (false) or second (true)
     
+    // Piston Spike Relay (Up/Down)
+    Relay pistonSpikeRelay;
+    
+    // Piston Solenoid
+    Solenoid pistonSolenoid;
     
     public void robotInit() {     
         // Construct drivetrain motors
@@ -74,15 +85,19 @@ public class MrRoboto extends IterativeRobot {
         }
         
         // Construct transmission objects
-        this.xmissionSolenoid1 = new Solenoid(SOLENOID1_CHANNEL);
-        this.xmissionSolenoid2 = new Solenoid(SOLENOID2_CHANNEL);
-        this.xmissionCompressor = new Compressor(PRESSURESW_CHANNEL,COMPRESSOR_RELAY_CHANNEL);
+        this.xmissionSolenoid1 = new Solenoid(XMISSION_SOLENOID1_ID);
+        this.xmissionSolenoid2 = new Solenoid(XMISSION_SOLENOID2_ID);
+        this.xmissionCompressor = new Compressor(PRESSURESW_ID,COMPRESSOR_RELAY_ID);
         
         // Construct RobotDrive w/ Jag motors
         this.driveTrain = new RobotDrive(frontLeftCAN,frontRightCAN,rearLeftCAN,rearRightCAN);
         
         // Construct Joystick
-        mainJoy = new Joystick(JOY_PORT);
+        this.mainJoy = new Joystick(JOY_PORT);
+        this.offJoy = new Joystick(OFFJOY_PORT);
+        
+        // Construct MagicTube objects
+        this.pistonSpikeRelay = new Relay(PISTON_SPIKE_ID);
  
         // init bools
         isTankDrive = true; //tank drive is default
@@ -97,7 +112,8 @@ public class MrRoboto extends IterativeRobot {
         
     }
     public void teleopPeriodic() { 
-        // Begin Drive Train Code        
+        
+        // --- Begin Drive Train Code ---
         // Check if a gearshift button was pressed       
         // if get shift down button and currently in second gear
         if (mainJoy.getRawButton(SHIFT_DOWN_BUTTONID) && curGear == true) {   
@@ -112,7 +128,7 @@ public class MrRoboto extends IterativeRobot {
             xmissionSolenoid2.set(curGear);
         }                  
         // Check if arcade drive button was pressed
-        if (mainJoy.getRawButton(ARCADE_DRIVE_BUTTONID) && isTankDrive) {
+        if (mainJoy.getRawButton(ARCADE_DRIVE_BUTTONID) && isTankDrive) {                      
             isTankDrive = false; // switch to arcade
         }
         // Check if tank drive button was pressed
@@ -126,6 +142,6 @@ public class MrRoboto extends IterativeRobot {
             driveTrain.arcadeDrive(mainJoy);
         }
             
-        // End drive train code
+        // --- End drive train code ---
     }
 }
