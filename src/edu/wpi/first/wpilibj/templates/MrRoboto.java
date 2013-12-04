@@ -47,6 +47,10 @@ public class MrRoboto extends IterativeRobot {
     final int MAGIC_SPIKE_ID = 0;
     final int MAGIC_SOLENOID_ID = 0;
     
+    //Conveyor channels
+    final int CONVEYOR_SPIKE_ID = 0;
+    final int SPINDLE_JAG_ID = 0;
+    
     // CAN Jaguars
     CANJaguar frontLeftCAN;
     CANJaguar frontRightCAN;
@@ -61,6 +65,9 @@ public class MrRoboto extends IterativeRobot {
     
     // MagicTube
     MagicTube magicTube;
+    
+    //Conveyor
+    Conveyor conveyor;
     
     // Transmission
     Solenoid xmissionSolenoid1, xmissionSolenoid2;
@@ -98,7 +105,7 @@ public class MrRoboto extends IterativeRobot {
         // Construct RobotDrive w/ Jag motors
         this.driveTrain = new RobotDrive(frontLeftCAN,frontRightCAN,rearLeftCAN,rearRightCAN);
         
-        //Construct encoder
+        // Construct Encoder
         this.encoder = new Encoder(0,0);
         
         // Construct Joystick
@@ -107,6 +114,9 @@ public class MrRoboto extends IterativeRobot {
         
         // Construct MagicTube for magical tube-ness!
         this.magicTube = new MagicTube(MAGIC_SPIKE_ID, MAGIC_SOLENOID_ID);
+        
+        // Construct Conveyor
+        this.conveyor = new Conveyor(CONVEYOR_SPIKE_ID, SPINDLE_JAG_ID);
  
         // init bools
         isTankDrive = true; //tank drive is default
