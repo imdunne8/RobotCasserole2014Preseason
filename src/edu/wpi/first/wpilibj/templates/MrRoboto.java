@@ -22,29 +22,29 @@ public class MrRoboto extends IterativeRobot {
     // All constants are placeholders, get real ones from electrical
     
     // CAN Jag Drivetrain IDs
-    final int CANID_FRONT_LEFT = 0; 
-    final int CANID_FRONT_RIGHT = 0;
-    final int CANID_BACK_LEFT = 0;
-    final int CANID_BACK_RIGHT = 0;
+    final int CANID_FRONT_LEFT = 13; 
+    final int CANID_FRONT_RIGHT = 14;
+    final int CANID_BACK_LEFT = 4;
+    final int CANID_BACK_RIGHT = 2;
     
     // Transmission object channels
-    final int XMISSION_SOLENOID1_ID = 0;
-    final int XMISSION_SOLENOID2_ID = 0;
-    final int COMPRESSOR_RELAY_ID = 0;
-    final int PRESSURESW_ID = 0;
+    final int XMISSION_SOLENOID1_ID = 1;
+    final int XMISSION_SOLENOID2_ID = 2;
+    final int COMPRESSOR_RELAY_ID = 1;
+    final int PRESSURESW_ID = 2;
     
     // Joystick port
-    final int JOY_PORT = 0;
-    final int OFFJOY_PORT = 0;
+    final int JOY_PORT = 1;
+    final int OFFJOY_PORT = 2;
     
     // button ID's for used buttons on joystick 
     final int SHIFT_DOWN_BUTTONID = 0;
     final int SHIFT_UP_BUTTONID = 0;
-    final int ARCADE_DRIVE_BUTTONID = 0;
+    final int ARCADE_DRIVE_BUTTONID = 4;
     final int TANK_DRIVE_BUTTONID = 0;
     
     // MagicTube object channels
-    final int MAGIC_SPIKE_ID = 0;
+    final int MAGIC_SPIKE_ID = 8;
     final int MAGIC_SOLENOID_ID = 0;
     
     //Conveyor channels
@@ -79,7 +79,8 @@ public class MrRoboto extends IterativeRobot {
     // Booleans
     public boolean isTankDrive; // tank drive or arcade drive? 
     public boolean curGear; // first gear (false) or second (true)
-    
+    public boolean enableMagicTube = true;
+    public boolean enableConveyor = false;
     
     
     public void robotInit() {     
@@ -112,12 +113,17 @@ public class MrRoboto extends IterativeRobot {
         this.mainJoy = new Joystick(JOY_PORT);
         this.offJoy = new Joystick(OFFJOY_PORT);
         
-        // Construct MagicTube for magical tube-ness!
-        this.magicTube = new MagicTube(MAGIC_SPIKE_ID, MAGIC_SOLENOID_ID);
+        // Construct MagicTube for magical tube-ness if enabled!
+        if(enableMagicTube == true) 
+        {
+            this.magicTube = new MagicTube(MAGIC_SPIKE_ID, MAGIC_SOLENOID_ID);
+        }
         
-        // Construct Conveyor
-        this.conveyor = new Conveyor(CONVEYOR_SPIKE_ID, SPINDLE_JAG_ID);
- 
+        // Construct Conveyor if enabled
+        if(enableConveyor == true) {
+            this.conveyor = new Conveyor(CONVEYOR_SPIKE_ID, SPINDLE_JAG_ID);
+        }
+        
         // init bools
         isTankDrive = true; //tank drive is default
         curGear = false; // start in 1st gear 
