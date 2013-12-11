@@ -41,7 +41,7 @@ public class MrRoboto extends IterativeRobot {
     final int SHIFT_DOWN_BUTTONID = 0;
     final int SHIFT_UP_BUTTONID = 0;
     final int ARCADE_DRIVE_BUTTONID = 4;
-    final int TANK_DRIVE_BUTTONID = 0;
+    final int TANK_DRIVE_BUTTONID = 1;
     
     // MagicTube object channels
     final int MAGIC_SPIKE_ID = 8;
@@ -102,12 +102,13 @@ public class MrRoboto extends IterativeRobot {
         this.xmissionSolenoid1 = new Solenoid(XMISSION_SOLENOID1_ID);
         this.xmissionSolenoid2 = new Solenoid(XMISSION_SOLENOID2_ID);
         this.xmissionCompressor = new Compressor(PRESSURESW_ID,COMPRESSOR_RELAY_ID);
+        this.xmissionCompressor.start();
         
         // Construct RobotDrive w/ Jag motors
         this.driveTrain = new RobotDrive(frontLeftCAN,frontRightCAN,rearLeftCAN,rearRightCAN);
         
         // Construct Encoder
-        this.encoder = new Encoder(0,0);
+        //this.encoder = new Encoder(0,0);
         
         // Construct Joystick
         this.mainJoy = new Joystick(JOY_PORT);
@@ -116,7 +117,7 @@ public class MrRoboto extends IterativeRobot {
         // Construct MagicTube for magical tube-ness if enabled!
         if(enableMagicTube == true) 
         {
-            this.magicTube = new MagicTube(MAGIC_SPIKE_ID, MAGIC_SOLENOID_ID);
+            //this.magicTube = new MagicTube(MAGIC_SPIKE_ID, MAGIC_SOLENOID_ID);
         }
         
         // Construct Conveyor if enabled
@@ -131,6 +132,12 @@ public class MrRoboto extends IterativeRobot {
         // set solenoids
         xmissionSolenoid1.set(curGear);
         xmissionSolenoid2.set(curGear);
+        
+        driveTrain.setSafetyEnabled(false);
+        driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        driveTrain.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
+        driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
+        driveTrain.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
         
     }
     public void autonomousPeriodic() {
@@ -162,7 +169,7 @@ public class MrRoboto extends IterativeRobot {
         }     
         // Drive it!
         if (isTankDrive) {
-            driveTrain.tankDrive(mainJoy, offJoy);
+            driveTrain.tankDrive(mainJoy.getRawAxis(1), mainJoy.getRawAxis(3));
         } else {
             driveTrain.arcadeDrive(mainJoy);
         }
