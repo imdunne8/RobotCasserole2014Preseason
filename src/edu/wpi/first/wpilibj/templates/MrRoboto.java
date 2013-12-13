@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.can.CANTimeoutException;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class MrRoboto extends IterativeRobot {       
     
@@ -30,16 +31,16 @@ public class MrRoboto extends IterativeRobot {
     // Transmission object channels
     final int XMISSION_SOLENOID1_ID = 1;
     final int XMISSION_SOLENOID2_ID = 2;
-    final int COMPRESSOR_RELAY_ID = 1;
-    final int PRESSURESW_ID = 2;
+    final int COMPRESSOR_RELAY_ID = 8;
+    final int PRESSURESW_ID = 14;
     
     // Joystick port
     final int JOY_PORT = 1;
     final int OFFJOY_PORT = 2;
     
     // button ID's for used buttons on joystick 
-    final int SHIFT_DOWN_BUTTONID = 0;
-    final int SHIFT_UP_BUTTONID = 0;
+    final int SHIFT_DOWN_BUTTONID = 5; //left bumper
+    final int SHIFT_UP_BUTTONID = 6; //right bumper
     final int ARCADE_DRIVE_BUTTONID = 4;
     final int TANK_DRIVE_BUTTONID = 1;
     
@@ -105,7 +106,7 @@ public class MrRoboto extends IterativeRobot {
         this.xmissionCompressor.start();
         
         // Construct RobotDrive w/ Jag motors
-        this.driveTrain = new RobotDrive(frontLeftCAN,frontRightCAN,rearLeftCAN,rearRightCAN);
+        this.driveTrain = new RobotDrive(frontLeftCAN,rearLeftCAN,frontRightCAN,rearRightCAN);
         
         // Construct Encoder
         //this.encoder = new Encoder(0,0);
@@ -134,10 +135,10 @@ public class MrRoboto extends IterativeRobot {
         xmissionSolenoid2.set(curGear);
         
         driveTrain.setSafetyEnabled(false);
-        driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
-        driveTrain.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
-        driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-        driveTrain.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
+        driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, false);
+        driveTrain.setInvertedMotor(RobotDrive.MotorType.kRearLeft, false);
+        driveTrain.setInvertedMotor(RobotDrive.MotorType.kFrontRight, false);
+        driveTrain.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
         
     }
     public void autonomousPeriodic() {
@@ -168,12 +169,22 @@ public class MrRoboto extends IterativeRobot {
             isTankDrive = true; // switch to tank
         }     
         // Drive it!
-        if (isTankDrive) {
-            driveTrain.tankDrive(mainJoy.getRawAxis(1), mainJoy.getRawAxis(3));
-        } else {
-            driveTrain.arcadeDrive(mainJoy);
+//        if (isTankDrive) {
+//            driveTrain.tankDrive(mainJoy.getRawAxis(1), mainJoy.getRawAxis(3));
+//        } else {
+//            driveTrain.arcadeDrive(mainJoy);
+//        }
+        driveTrain.arcadeDrive(mainJoy);
+        try {
+            SmartDashboard.putNumber("Front Left Command", frontLeftCAN.getOutputVoltage());
+            SmartDashboard.putNumber("Front Right Command", frontRightCAN.getOutputVoltage());
+            SmartDashboard.putNumber("Rear Left Command", rearLeftCAN.getOutputVoltage());
+            SmartDashboard.putNumber("Rear Right Command", rearRightCAN.getOutputVoltage());
+            SmartDashboard.putBoolean("Pressure Switch", xmissionCompressor.getPressureSwitchValue());
+                
+            // --- End drive train code ---
+        } catch (CANTimeoutException ex) {
+            ex.printStackTrace();
         }
-            
-        // --- End drive train code ---
     }
 }
